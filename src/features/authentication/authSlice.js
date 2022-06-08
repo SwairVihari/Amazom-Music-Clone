@@ -1,5 +1,6 @@
+import { fabClasses } from '@mui/material';
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
-import { GoogleAuthProvider,signInWithPopup, signOut } from 'firebase/auth';
+import { GoogleAuthProvider,signInWithPopup, signOut, signInAnonymously } from 'firebase/auth';
 import { auth } from '../../firebase';
 
 export const login = createAsyncThunk('auth/login', 
@@ -20,6 +21,22 @@ async()=>{
         sessionStorage.setItem("amc-user", JSON.stringify(profile))
         
         return profile
+})
+
+export const guestLogin = createAsyncThunk('auth/guestLogin', async()=>{
+    const data = await signInAnonymously(auth)
+
+    const accesToken = "guestlogintoken"
+
+    const profile = {
+        name: "guest",
+        photoURL:"www.google.com",
+    }
+
+    sessionStorage.setItem("amc-access-token", accesToken)
+    sessionStorage.setItem("amc-user", JSON.stringify(profile))
+    
+    return profile
 })
 
 export const loadUser = createAsyncThunk('auth/loadUser', 
@@ -82,8 +99,17 @@ const authSlice = createSlice({
             state.loading=false
             state.error="There is Something Wrong"
         },
-
-
+        [guestLogin.pending]:(state)=>{
+            state.loading=true
+        },
+        [guestLogin.fulfilled]:(state,action)=>{
+            state.loading=true
+            state.profile= action.payload
+        },
+        [guestLogin.rejected]:(state)=>{
+            state.loading=false
+            state.error = "Guest Login Is not Successful"
+        },
         [logout.pending]:(state)=>{
             state.loading = true
         },

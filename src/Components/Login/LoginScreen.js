@@ -3,7 +3,7 @@ import {useNavigate} from 'react-router-dom'
 import {useSelector, useDispatch} from 'react-redux'
 import Styles from "./LoginScreen.module.css"
 import logo from "../../Asset/images/logo.svg"
-import { login } from '../../features/authentication/authSlice'
+import { guestLogin, login } from '../../features/authentication/authSlice'
 const LoginScreen = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -11,6 +11,10 @@ const LoginScreen = () => {
 
     const loginWithGoogleHandler = () => {
         dispatch(login());
+    }
+
+    const guestLoginHandler = () => {
+        dispatch(guestLogin())
     }
 
     useEffect(()=>{
@@ -26,7 +30,7 @@ const LoginScreen = () => {
             <img className={Styles.logo} src={logo} alt="logo"/>
             <p className={Styles.heading}>Login to enjoy seemless Music experience</p>
             <button onClick={loginWithGoogleHandler} className={Styles.button}>Login with Google</button>
-            <button className={Styles.guestbutton}>Guest User</button>
+            <button onClick={guestLoginHandler} className={Styles.guestbutton}>Guest User</button>
         </div>
     </div>
   )
